@@ -1,0 +1,25 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "API that works with Front End to deliver an application which helps a user log their plants and the plants' watering schedule so that they can make sure to water the plants on time.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jduell12/Water_My_Plants_Back_End.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jduell12/Water_My_Plants_Back_End/issues"
+  },
+  "homepage": "https://github.com/jduell12/Water_My_Plants_Back_End#readme",
+  "dependencies": {
+    "gitignore": "^0.6.0",
+    "knex": "^0.21.8",
+    "node": "^15.0.1",
+    "pg": "^8.4.2"
+  }
+}
