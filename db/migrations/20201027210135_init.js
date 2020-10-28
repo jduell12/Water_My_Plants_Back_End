@@ -20,7 +20,7 @@ exports.up = function (knex) {
         .unsigned()
         .references("users.userid")
         .onDelete("CASCADE")
-        .noUpdate("CASCADE");
+        .onUpdate("CASCADE");
     });
 };
 
