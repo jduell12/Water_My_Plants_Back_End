@@ -1,8 +1,8 @@
 const db = require("../db/dbConfig");
 const Users = require("./usersModel");
 
-describe("usersModel", () => {
-  //sample users to be used in tests
+//sample users to be used in tests
+function getTestUsers() {
   const user1 = {
     username: "wolf",
     password: "pass",
@@ -36,6 +36,13 @@ describe("usersModel", () => {
     phone: "7345553333",
   };
 
+  users = [user1, user2, user3, user4];
+
+  return users;
+}
+
+//what should be returned from the db
+function getExpectedTestUsers() {
   dbTestUsers = [
     {
       username: "wolf",
@@ -74,6 +81,17 @@ describe("usersModel", () => {
       userid: 4,
     },
   ];
+  return dbTestUsers;
+}
+
+//async forEach method
+async function asyncForEach(array, cb) {
+  for (let i = 0; i < array.length; i++) {
+    await cb(array[i], i, array);
+  }
+}
+
+describe("usersModel", () => {
   //wipes all tables in database clean so each test starts with empty tables
   beforeEach(async () => {
     //db is the knex initialized object using db.raw to truncate postgres tables with foreign keys
@@ -133,7 +151,10 @@ describe("usersModel", () => {
   //adds users to the database
   describe("addUsers(user)", () => {
     it("adds a user to an empty db", async () => {
-      await Users.addUser(user1);
+      let userList = getTestUsers();
+      let dbTestUsers = getExpectedTestUsers();
+
+      await Users.addUser(userList[0]);
 
       const users = await db("users");
       const shouldGet = [dbTestUsers[0]];
@@ -143,11 +164,15 @@ describe("usersModel", () => {
     });
 
     it("adds a user to a non-empty db", async () => {
-      await db("users").insert(user1);
-      await db("users").insert(user2);
-      await db("users").insert(user3);
-      await Users.addUser(user4);
+      let list = getTestUsers();
+      let userList = [list[0], list[1], list[2]];
+      let dbTestUsers = getExpectedTestUsers();
 
+      await asyncForEach(userList, async (user) => {
+        await db("users").insert(user);
+      });
+
+      await Users.addUser(list[3]);
       const users = await db("users");
 
       expect(users).toHaveLength(4);
