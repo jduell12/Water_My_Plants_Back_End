@@ -1,81 +1,79 @@
-const { expect, it } = require("@jest/globals");
 const db = require("../db/dbConfig");
 const Users = require("./usersModel");
 
-//sample users to be used in tests
-const user1 = {
-  username: "wolf",
-  password: "pass",
-  email: "something@gmail.com",
-  firstname: "Wolf",
-  lastname: "Kelly",
-  phone: "7345553323",
-};
-const user2 = {
-  username: "sam",
-  password: "pass",
-  email: "",
-  firstname: "Sam",
-  lastname: "Gamgee",
-  phone: "7345523323",
-};
-const user3 = {
-  username: "dragon",
-  password: "pass",
-  email: "something@gmail.com",
-  firstname: "A",
-  lastname: "Dragon",
-  phone: "",
-};
-const user4 = {
-  username: "penguin",
-  password: "pass",
-  email: "something@gmail.com",
-  firstname: "",
-  lastname: "",
-  phone: "7345553333",
-};
-
-dbTestUsers = [
-  {
+describe("usersModel", () => {
+  //sample users to be used in tests
+  const user1 = {
     username: "wolf",
     password: "pass",
     email: "something@gmail.com",
     firstname: "Wolf",
     lastname: "Kelly",
     phone: "7345553323",
-    userid: 1,
-  },
-  {
+  };
+  const user2 = {
     username: "sam",
     password: "pass",
     email: "",
     firstname: "Sam",
     lastname: "Gamgee",
     phone: "7345523323",
-    userid: 2,
-  },
-  {
+  };
+  const user3 = {
     username: "dragon",
     password: "pass",
     email: "something@gmail.com",
     firstname: "A",
     lastname: "Dragon",
     phone: "",
-    userid: 3,
-  },
-  {
+  };
+  const user4 = {
     username: "penguin",
     password: "pass",
     email: "something@gmail.com",
     firstname: "",
     lastname: "",
     phone: "7345553333",
-    userid: 4,
-  },
-];
+  };
 
-describe("usersModel", () => {
+  dbTestUsers = [
+    {
+      username: "wolf",
+      password: "pass",
+      email: "something@gmail.com",
+      firstname: "Wolf",
+      lastname: "Kelly",
+      phone: "7345553323",
+      userid: 1,
+    },
+    {
+      username: "sam",
+      password: "pass",
+      email: "",
+      firstname: "Sam",
+      lastname: "Gamgee",
+      phone: "7345523323",
+      userid: 2,
+    },
+    {
+      username: "dragon",
+      password: "pass",
+      email: "something@gmail.com",
+      firstname: "A",
+      lastname: "Dragon",
+      phone: "",
+      userid: 3,
+    },
+    {
+      username: "penguin",
+      password: "pass",
+      email: "something@gmail.com",
+      firstname: "",
+      lastname: "",
+      phone: "7345553333",
+      userid: 4,
+    },
+  ];
   //wipes all tables in database clean so each test starts with empty tables
   beforeEach(async () => {
     //db is the knex initialized object using db.raw to truncate postgres tables with foreign keys
@@ -133,7 +131,7 @@ describe("usersModel", () => {
   });
 
   //adds users to the database
-  describe("addUsers", () => {
+  describe("addUsers(user)", () => {
     it("adds a user to an empty db", async () => {
       await Users.addUser(user1);
 
@@ -154,6 +152,47 @@ describe("usersModel", () => {
 
       expect(users).toHaveLength(4);
       expect(users).toEqual(dbTestUsers);
+    });
+  });
+
+  describe("editUser(user, id)", () => {
+    it("edits a user in a db with 1 entry", async () => {
+      await db("users").insert(user1);
+
+      const count = await Users.editUser(
+        { email: "somethingElse@gmail.com" },
+        1,
+      );
+
+      let expectedUser1 = dbTestUsers[0];
+      expectedUser1.email = "somethingElse@gmail.com";
+      const user = await db("users");
+
+      expect(count).toBe(1);
+      expect(user).toEqual([expectedUser1]);
+    });
+
+    it("edits a user in a db with more than 1 entry", async () => {
+      await db("users").insert(user1);
+      await db("users").insert(user2);
+      await db("users").insert(user3);
+      await db("users").insert(user4);
+
+      const count = await Users.editUser(
+        { email: "somethingElse@gmail.com" },
+        3,
+      );
+
+      let expectedUsers = dbTestUsers;
+      //change the email to the edited one we supplied
+      expectedUsers[2].email = "somethingElse@gmail.com";
+      //change the email to the original email that was changed in previous test
+      expectedUsers[0].email = "something@gmail.com";
+
+      const users = await db("users");
+
+      expect(count).toBe(1);
+      expect(users).toEqual(expect.arrayContaining(expectedUsers));
     });
   });
 });

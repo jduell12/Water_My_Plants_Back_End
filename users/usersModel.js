@@ -8,7 +8,14 @@ function addUser(user) {
 }
 
 //edits user with the given id
-function editUser(userId) {}
+function editUser(userEdits, userid) {
+  return db("users")
+    .where({ userid })
+    .update(userEdits)
+    .then((count) => {
+      return count;
+    });
+}
 
 //gets all users from the database
 function getUsers() {
