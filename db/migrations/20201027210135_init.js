@@ -11,9 +11,9 @@ exports.up = function (knex) {
     })
     .createTable("plants", (tbl) => {
       tbl.increments("plantid");
-      tbl.string("name", 256);
+      tbl.string("name", 256).notNullable();
       tbl.string("water_frequency", 256).notNullable();
-      tbl.string("species", 256).notNullable();
+      tbl.string("species", 256);
       tbl.string("image", 256);
       tbl
         .integer("userid")

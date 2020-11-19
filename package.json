@@ -4,7 +4,7 @@
   "description": "API that works with Front End to deliver an application which helps a user log their plants and the plants' watering schedule so that they can make sure to water the plants on time.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env DB_ENV=testing jest --watch --runInBand"
   },
   "repository": {
     "type": "git",
