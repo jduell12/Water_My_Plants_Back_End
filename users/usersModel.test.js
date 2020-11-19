@@ -258,6 +258,24 @@ describe("usersModel", () => {
       expect(count).toBe(1);
       expect(dbUsers).toEqual(expectedUsers);
     });
+
+    it("returns 0 when trying to delete a user that does not exist from populated database", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+
+      const count = await Users.deleteUser(5);
+      dbUsers = await db("users");
+
+      expect(count).toBe(0);
+      expect(dbUsers).toEqual(expectedUsers);
+    });
   });
 
   //returns user object corresponding to the filtername and the value associated with it

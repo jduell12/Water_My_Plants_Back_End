@@ -21,4 +21,7 @@ function editPlant(plantid, plantEdits) {
     });
 }
 
-function deletePlant() {}
+//removes the plant object with the given id from the database and returns the number of records changed
+function deletePlant(plantid) {
+  return db("plants").del().where({ plantid });
+}

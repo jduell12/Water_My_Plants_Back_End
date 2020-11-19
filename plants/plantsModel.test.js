@@ -184,4 +184,82 @@ describe("usersModel", () => {
       expect(dbPlants).toEqual([expectedPlant]);
     });
   });
+
+  describe("deletePlant(plantid)", () => {
+    it("deletes plant from plant table with only 1 plant", async () => {
+      const users = getTestUsers();
+      const plants = getTestPlants();
+      let expectedPlant = plants[0];
+      expectedPlant.species = "Succulent";
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      await db("plants").insert(plants[0]);
+
+      const dbUsers = await db("users");
+      let dbPlants = await db("plants");
+
+      expect(dbUsers.length).toBe(4);
+      expect(dbPlants.length).toBe(1);
+
+      const count = await Plants.deletePlant(1);
+      dbPlants = await db("plants");
+
+      expect(count).toEqual(1);
+      expect(dbPlants).toEqual([]);
+    });
+
+    it("deletes plant from populated plant table", async () => {
+      const users = getTestUsers();
+      const plants = getTestPlants();
+      const expectedPlants = [plants[0], plants[1], plants[2]];
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      for (let i = 0; i < plants.length; i++) {
+        await db("plants").insert(plants[i]);
+      }
+
+      const dbUsers = await db("users");
+      let dbPlants = await db("plants");
+
+      expect(dbUsers.length).toBe(4);
+      expect(dbPlants.length).toBe(4);
+
+      const count = await Plants.deletePlant(4);
+      dbPlants = await db("plants");
+
+      expect(count).toEqual(1);
+      expect(dbPlants.length).toEqual(3);
+      expect(dbPlants).toEqual(expectedPlants);
+    });
+
+    it("returns 0 when trying to delete a plant that does not exist", async () => {
+      const users = getTestUsers();
+      const plants = getTestPlants();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      for (let i = 0; i < plants.length; i++) {
+        await db("plants").insert(plants[i]);
+      }
+
+      const dbUsers = await db("users");
+      let dbPlants = await db("plants");
+
+      expect(dbUsers.length).toBe(4);
+      expect(dbPlants.length).toBe(4);
+
+      const count = await Plants.deletePlant(5);
+      dbPlants = await db("plants");
+      expect(count).toBe(0);
+      expect(dbPlants.length).toBe(4);
+    });
+  });
 });
