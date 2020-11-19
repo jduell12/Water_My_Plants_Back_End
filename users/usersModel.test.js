@@ -260,9 +260,9 @@ describe("usersModel", () => {
     });
   });
 
-  //returns user object corresponding to the userid
-  describe("getUserById(userid)", () => {
-    it("gets a user in a populated database by their userid", async () => {
+  //returns user object corresponding to the filtername and the value associated with it
+  describe("getUserBy(filterName, filterValue)", () => {
+    it("gets a list of users in a populated database by their userid", async () => {
       let users = getTestUsers();
       let expectedUsers = getExpectedTestUsers();
 
@@ -274,13 +274,12 @@ describe("usersModel", () => {
       expect(dbUsers.length).toBe(4);
       expect(dbUsers).toEqual(expectedUsers);
 
-      let user1 = await Users.getUserById(1);
-      expect(user1).toEqual(expectedUsers[0]);
+      let user1 = await Users.getUserBy("userid", 1);
+      expect(user1).toEqual([expectedUsers[0]]);
     });
 
-    it("returns false when trying to get user that's not in the database", async () => {
+    it("returns empty array when trying to get user that's not in the database user their userid", async () => {
       let users = getTestUsers();
-      let expectedUsers = getExpectedTestUsers();
 
       for (let i = 0; i < users.length - 1; i++) {
         await db("users").insert(users[i]);
@@ -288,11 +287,186 @@ describe("usersModel", () => {
       let dbUsers = await db("users");
       expect(dbUsers.length).toBe(3);
 
-      let user4 = await Users.getUserById(4);
-      expect(user4).toBe(false);
+      let user4 = await Users.getUserBy("userid", 4);
+      expect(user4).toEqual([]);
+    });
+
+    it("gets a list of users in a populated database by their username", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+      expect(dbUsers).toEqual(expectedUsers);
+
+      let user1 = await Users.getUserBy("username", "wolf");
+      expect(user1).toEqual([expectedUsers[0]]);
+    });
+
+    it("returns an empty array when trying to get user that's not in the database using their username", async () => {
+      let users = getTestUsers();
+
+      for (let i = 0; i < users.length - 1; i++) {
+        await db("users").insert(users[i]);
+      }
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(3);
+
+      let user4 = await Users.getUserBy("username", "penguin");
+      expect(user4).toEqual([]);
+    });
+
+    it("gets a list of users in a populated database by their password", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+      expect(dbUsers).toEqual(expectedUsers);
+
+      let user1 = await Users.getUserBy("password", "pass");
+      expect(user1).toEqual(expectedUsers);
+    });
+
+    it("returns an empty array when trying to get user that's not in the database using their username", async () => {
+      let users = getTestUsers();
+
+      for (let i = 0; i < users.length - 1; i++) {
+        await db("users").insert(users[i]);
+      }
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(3);
+
+      let user4 = await Users.getUserBy("password", "penguin");
+      expect(user4).toEqual([]);
+    });
+
+    it("gets a list of users in a populated database by their email", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+      expect(dbUsers).toEqual(expectedUsers);
+
+      let user1 = await Users.getUserBy("email", "something@gmail.com");
+      expect(user1).toContainEqual(
+        expectedUsers[0],
+        expectedUsers[2],
+        expectedUsers[3],
+      );
+    });
+
+    it("returns an empty array when trying to get user that's not in the database using their email", async () => {
+      let users = getTestUsers();
+
+      for (let i = 0; i < users.length - 1; i++) {
+        await db("users").insert(users[i]);
+      }
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(3);
+
+      let user4 = await Users.getUserBy("email", "penguin@penguin.com");
+      expect(user4).toEqual([]);
+    });
+
+    it("gets a list of users in a populated database by their firstname", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+      expect(dbUsers).toEqual(expectedUsers);
+
+      let user1 = await Users.getUserBy("firstname", "Sam");
+      expect(user1).toEqual([expectedUsers[1]]);
+    });
+
+    it("returns an empty array when trying to get user that's not in the database using their firstname", async () => {
+      let users = getTestUsers();
+
+      for (let i = 0; i < users.length - 1; i++) {
+        await db("users").insert(users[i]);
+      }
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(3);
+
+      let user4 = await Users.getUserBy("firstname", "Leo");
+      expect(user4).toEqual([]);
+    });
+
+    it("gets a list of users in a populated database by their lastname", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+      expect(dbUsers).toEqual(expectedUsers);
+
+      let user1 = await Users.getUserBy("lastname", "Dragon");
+      expect(user1).toEqual([expectedUsers[2]]);
+    });
+
+    it("returns an empty array when trying to get user that's not in the database using their lastname", async () => {
+      let users = getTestUsers();
+
+      for (let i = 0; i < users.length - 1; i++) {
+        await db("users").insert(users[i]);
+      }
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(3);
+
+      let user4 = await Users.getUserBy("lastname", "Leo");
+      expect(user4).toEqual([]);
+    });
+
+    it("gets a list of users in a populated database by their phone", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+      expect(dbUsers).toEqual(expectedUsers);
+
+      let user1 = await Users.getUserBy("phone", "7345553333");
+      expect(user1).toEqual([expectedUsers[3]]);
+    });
+
+    it("returns an empty array when trying to get user that's not in the database using their phone", async () => {
+      let users = getTestUsers();
+
+      for (let i = 0; i < users.length - 1; i++) {
+        await db("users").insert(users[i]);
+      }
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(3);
+
+      let user4 = await Users.getUserBy("phone", "1-111-111-1111");
+      expect(user4).toEqual([]);
     });
   });
-
-  //returns user object corresponding to the username
-  describe("getUserByUsername(username)", () => {});
 });
