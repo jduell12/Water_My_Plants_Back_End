@@ -180,9 +180,11 @@ describe("usersModel", () => {
     });
   });
 
+  //edits an existing user in the database
   describe("editUser(user, id)", () => {
     it("edits a user in a db with 1 entry", async () => {
-      await db("users").insert(user1);
+      let users = getTestUsers();
+      await db("users").insert(users[0]);
 
       const count = await Users.editUser(
         { email: "somethingElse@gmail.com" },
@@ -198,10 +200,11 @@ describe("usersModel", () => {
     });
 
     it("edits a user in a db with more than 1 entry", async () => {
-      await db("users").insert(user1);
-      await db("users").insert(user2);
-      await db("users").insert(user3);
-      await db("users").insert(user4);
+      let users = getTestUsers();
+      await db("users").insert(users[0]);
+      await db("users").insert(users[1]);
+      await db("users").insert(users[2]);
+      await db("users").insert(users[3]);
 
       const count = await Users.editUser(
         { email: "somethingElse@gmail.com" },
@@ -214,10 +217,46 @@ describe("usersModel", () => {
       //change the email to the original email that was changed in previous test
       expectedUsers[0].email = "something@gmail.com";
 
-      const users = await db("users");
+      const dbusers = await db("users");
 
       expect(count).toBe(1);
-      expect(users).toEqual(expect.arrayContaining(expectedUsers));
+      expect(dbusers).toEqual(expect.arrayContaining(expectedUsers));
+    });
+  });
+
+  //deletes an existing user from the database
+  describe("deleteUser(userid)", () => {
+    it("deletes single user from database holding only 1 user", async () => {
+      let users = getTestUsers();
+
+      await db("users").insert(users[0]);
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(1);
+
+      const count = await Users.deleteUser(1);
+      dbUsers = await db("users");
+
+      expect(count).toBe(1);
+      expect(dbUsers).toEqual([]);
+    });
+
+    it("deletes single user from populated database", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+      expectedUsers.shift();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+
+      const count = await Users.deleteUser(1);
+      dbUsers = await db("users");
+
+      expect(count).toBe(1);
+      expect(dbUsers).toEqual(expectedUsers);
     });
   });
 });
