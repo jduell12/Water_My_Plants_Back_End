@@ -259,4 +259,40 @@ describe("usersModel", () => {
       expect(dbUsers).toEqual(expectedUsers);
     });
   });
+
+  //returns user object corresponding to the userid
+  describe("getUserById(userid)", () => {
+    it("gets a user in a populated database by their userid", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(4);
+      expect(dbUsers).toEqual(expectedUsers);
+
+      let user1 = await Users.getUserById(1);
+      expect(user1).toEqual(expectedUsers[0]);
+    });
+
+    it("returns false when trying to get user that's not in the database", async () => {
+      let users = getTestUsers();
+      let expectedUsers = getExpectedTestUsers();
+
+      for (let i = 0; i < users.length - 1; i++) {
+        await db("users").insert(users[i]);
+      }
+      let dbUsers = await db("users");
+      expect(dbUsers.length).toBe(3);
+
+      let user4 = await Users.getUserById(4);
+      expect(user4).toBe(false);
+    });
+  });
+
+  //returns user object corresponding to the username
+  describe("getUserByUsername(username)", () => {});
 });

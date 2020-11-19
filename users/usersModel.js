@@ -35,8 +35,13 @@ function deleteUser(userid) {
 }
 
 //returns user object corresponding to the given id
-function getUserById(userid) {
-  return db("users").where({ userid }).first();
+async function getUserById(userid) {
+  const user = await db("users").where({ userid }).first();
+  if (user) {
+    return user;
+  } else {
+    return false;
+  }
 }
 
 //returns user object corresponding to the given username
