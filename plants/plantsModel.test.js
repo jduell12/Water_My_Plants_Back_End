@@ -31,7 +31,7 @@ function getTestPlants() {
     {
       name: "Sir McThirst",
       water_frequency: "1x/hour",
-      species: "",
+      species: "iris",
       image: "",
       userid: 1,
       plantid: 4,
@@ -262,4 +262,70 @@ describe("usersModel", () => {
       expect(dbPlants.length).toBe(4);
     });
   });
+
+  describe("getPlantBy(filterName, filterValue)", () => {
+    beforeEach(async () => {
+      const users = getTestUsers();
+      const plants = getTestPlants();
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      for (let i = 0; i < plants.length; i++) {
+        await db("plants").insert(plants[i]);
+      }
+
+      const dbUsers = await db("users");
+      let dbPlants = await db("plants");
+
+      expect(dbUsers.length).toBe(4);
+      expect(dbPlants.length).toBe(4);
+    }); //end of beforeEach
+
+    it("gets list of plant objects by given name", async () => {
+      const plants = getTestPlants();
+      const plant = await Plants.getPlantBy("name", "Franky");
+      expect(plant).toEqual([plants[0]]);
+    });
+
+    it("returns empty array when trying to get a plant by a name that's not in the database", async () => {
+      const plant = await Plants.getPlantBy("name", "Frankie");
+      expect(plant).toEqual([]);
+    });
+
+    it("gets list of plant objects by given water frequency", async () => {
+      const plants = getTestPlants();
+      const plant = await Plants.getPlantBy("water_frequency", "1x/week");
+      expect(plant).toEqual([plants[2]]);
+    });
+
+    it("returns empty array when trying to get a plant by water frequency that's not in the database", async () => {
+      const plant = await Plants.getPlantBy("water_frequency", "10x/month");
+      expect(plant).toEqual([]);
+    });
+
+    it("gets list of plant objects by given species", async () => {
+      const plants = getTestPlants();
+      const plant = await Plants.getPlantBy("species", "iris");
+      expect(plant).toEqual([plants[3]]);
+    });
+
+    it("returns empty array when trying to get a plant by a species that's not in the database", async () => {
+      const plant = await Plants.getPlantBy("species", "Frankie");
+      expect(plant).toEqual([]);
+    });
+
+    it("gets list of plant objects by given userid", async () => {
+      const plants = getTestPlants();
+      const expectedPlants = [plants[2], plants[3]];
+      const plant = await Plants.getPlantBy("userid", 1);
+      expect(plant).toEqual(expectedPlants);
+    });
+
+    it("returns empty array when trying to get a plant by a user that's not in the database", async () => {
+      const plant = await Plants.getPlantBy("userid", 10);
+      expect(plant).toEqual([]);
+    });
+  }); //end getBy tests
 });
