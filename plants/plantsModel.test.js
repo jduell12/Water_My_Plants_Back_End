@@ -10,6 +10,7 @@ function getTestPlants() {
       species: "",
       image: "",
       userid: 3,
+      plantid: 1,
     },
     {
       name: "Eden",
@@ -17,6 +18,7 @@ function getTestPlants() {
       species: "",
       image: "",
       userid: 4,
+      plantid: 2,
     },
     {
       name: "WolfStar",
@@ -24,12 +26,15 @@ function getTestPlants() {
       species: "",
       image: "",
       userid: 1,
+      plantid: 3,
     },
     {
       name: "Sir McThirst",
       water_frequency: "1x/hour",
       species: "",
       image: "",
+      userid: 1,
+      plantid: 4,
     },
   ];
 }
@@ -124,6 +129,59 @@ describe("usersModel", () => {
       dbPlants = await db("plants");
       expect(dbPlants.length).toBe(4);
       expect(count).toEqual([4]);
+    });
+  });
+
+  describe("editPlant(plantid, plantEdits)", () => {
+    it("edits single plant in plants table", async () => {
+      const users = getTestUsers();
+      const plants = getTestPlants();
+      let expectedPlant = plants[0];
+      expectedPlant.species = "Succulent";
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      await db("plants").insert(plants[0]);
+
+      const dbUsers = await db("users");
+      let dbPlants = await db("plants");
+
+      expect(dbUsers.length).toBe(4);
+      expect(dbPlants.length).toBe(1);
+
+      const edit = await Plants.editPlant(1, { species: "Succulent" });
+      expect(edit).toBe(1);
+
+      dbPlants = await db("plants");
+      expect(dbPlants).toEqual([expectedPlant]);
+    });
+
+    it("edits single plant in a populated plants table", async () => {
+      const users = getTestUsers();
+      const plants = getTestPlants();
+      let expectedPlant = plants[0];
+      expectedPlant.species = "Succulent";
+      expectedPlant.plantid = 1;
+
+      for (let i = 0; i < users.length; i++) {
+        await db("users").insert(users[i]);
+      }
+
+      for (let i = 0; i < plants.length; i++) {
+        await db("plants").insert(plants[i]);
+      }
+      const dbUsers = await db("users");
+      let dbPlants = await db("plants");
+      expect(dbUsers.length).toBe(4);
+      expect(dbPlants.length).toBe(4);
+
+      const edit = await Plants.editPlant(1, { species: "Succulent" });
+      expect(edit).toBe(1);
+
+      dbPlants = await db("plants").where({ plantid: 1 });
+      expect(dbPlants).toEqual([expectedPlant]);
     });
   });
 });
