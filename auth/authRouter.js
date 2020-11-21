@@ -51,6 +51,10 @@ router.post("/login", (req, res) => {
           error_message: "Could not retrieve user from database",
         });
       });
+  } else {
+    res
+      .status(400)
+      .json({ message: "Please provide a username and a password" });
   }
 });
 
