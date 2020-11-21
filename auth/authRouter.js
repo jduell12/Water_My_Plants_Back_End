@@ -1,8 +1,6 @@
 const router = require("express").Router();
 const bcryptjs = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
-const constants = require("../config/constants");
 const Users = require("../users/usersModel");
 const { signToken, userValid } = require("./helpers");
 
@@ -48,12 +46,10 @@ router.post("/login", (req, res) => {
         }
       })
       .catch((e) => {
-        res
-          .status(500)
-          .json({
-            e: e.message,
-            error_message: "Could not retrieve user from database",
-          });
+        res.status(500).json({
+          e: e.message,
+          error_message: "Could not retrieve user from database",
+        });
       });
   }
 });

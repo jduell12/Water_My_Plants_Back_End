@@ -37,9 +37,9 @@ function deleteUser(userid) {
 async function getUserBy(filterName, filterValue) {
   switch (filterName) {
     case "username":
-      return db("users").where({ username: filterValue });
+      return db("users").where({ username: filterValue }).first();
     case "userid":
-      return db("users").where({ userid: filterValue });
+      return db("users").where({ userid: filterValue }).first();
     case "password":
       return db("users").where({ password: filterValue });
     case "email":
