@@ -58,8 +58,11 @@ router.post("/login", (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 router.get("/", (req, res) => {
   res.status(200).json({ auth: "working" });
 });
 
+=======
+>>>>>>> 49770a875aba7f9a703767bff7efea8c27d05fbb
 module.exports = router;

@@ -4,7 +4,8 @@
   "description": "API that works with Front End to deliver an application which helps a user log their plants and the plants' watering schedule so that they can make sure to water the plants on time.",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env DB_ENV=testing jest --watch --runInBand"
+    "test": "cross-env DB_ENV=testing jest --watch --runInBand",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
