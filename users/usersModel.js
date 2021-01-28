@@ -36,6 +36,8 @@ function deleteUser(userid) {
 //returns user object corresponding to the given filter and filter value
 async function getUserBy(filterName, filterValue) {
   switch (filterName) {
+    case "username_login":
+      return db("users").where({ username: filterValue }).first();
     case "username":
       return db("users")
         .where({ username: filterValue })
