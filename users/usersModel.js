@@ -14,7 +14,7 @@ function addUser(user) {
 }
 
 //edits user with the given id
-function editUser(userEdits, userid) {
+function editUser(userid, userEdits) {
   return db("users")
     .where({ userid })
     .update(userEdits)
@@ -36,8 +36,13 @@ function deleteUser(userid) {
 //returns user object corresponding to the given filter and filter value
 async function getUserBy(filterName, filterValue) {
   switch (filterName) {
-    case "username":
+    case "username_login":
       return db("users").where({ username: filterValue }).first();
+    case "username":
+      return db("users")
+        .where({ username: filterValue })
+        .select("userid", "username", "email", "firstname", "lastname", "phone")
+        .first();
     case "userid":
       return db("users").where({ userid: filterValue }).first();
     case "password":

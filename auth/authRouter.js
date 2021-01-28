@@ -4,7 +4,7 @@ const bcryptjs = require("bcryptjs");
 const Users = require("../users/usersModel");
 const { signToken, userValid } = require("./helpers");
 
-router.post("/createnewuser", (req, res) => {
+router.post("/register", (req, res) => {
   const user = req.body;
 
   if (userValid(user)) {
@@ -36,7 +36,7 @@ router.post("/login", (req, res) => {
   if (userValid(req.body)) {
     const { username, password } = req.body;
 
-    Users.getUserBy("username", username)
+    Users.getUserBy("username_login", username)
       .then((user) => {
         if (user && bcryptjs.compareSync(password, user.password)) {
           const token = signToken(user);
