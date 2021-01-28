@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const Users = require("./usersModel");
-const { getByUsername } = require("./helper");
 
 router.get("/getByUsername", (req, res) => {
   const username = req.jwt.username;
