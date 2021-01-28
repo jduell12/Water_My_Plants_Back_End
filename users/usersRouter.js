@@ -17,7 +17,6 @@ router.get("/getByUsername", (req, res) => {
 router.put("/editUser", (req, res) => {
   const username = req.jwt.username;
   const changes = req.body;
-  const userid = getByUsername(username);
 
   Users.editUser(userid, changes)
     .then((count) => {
