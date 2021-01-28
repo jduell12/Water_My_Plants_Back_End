@@ -18,15 +18,25 @@ router.put("/editUser", (req, res) => {
   const username = req.jwt.username;
   const changes = req.body;
 
-  Users.editUser(userid, changes)
-    .then((count) => {
-      res.status(200).json({ message: `Edited ${count} student successfully` });
+  Users.getUserBy("username", username)
+    .then((user) => {
+      Users.editUser(user.userid, changes)
+        .then((count) => {
+          res
+            .status(200)
+            .json({ message: `Edited ${count} student successfully` });
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .json({ err: err.message, message: "Could not edit that user" });
+        });
     })
-    .catch((err) => {
+    .catch((err) =>
       res
         .status(500)
-        .json({ err: err.message, message: "Could not edit that user" });
-    });
+        .json({ error: err.message, message: "No user with that username" }),
+    );
 });
 
 router.delete("/", async (req, res) => {
