@@ -16,3 +16,11 @@ API that works with Front End to deliver an application which helps a user log t
 | GET /users/getByUsername | Returns a registered user's information except for the password | authorization: {JWT (json web token)} | n/a |
 | PUT /users/editUser | Edits a registered user's information | authorization: {JWT (json web token)} | In body - tag followed by the new change. Ex. To edit the email: {email: email_to_change_to} | 
 | DEL /users/ | Removes registered user from database | authorization: {JWT (json web token)} | n/a |
+
+# Plants
+| Endpoint | Description | Required In Header | Optional |
+| -------- | ----------- | --------------- | ----- |
+| GET /plants | Returns the user's plants | authorization: {JWT (json web token)} | n/a |
+| POST /plants/addPlant | Adds plant for the user | authorization: {JWT (json web token)} | Body: name, water_frequency, species - optional, image - optional | 
+| PUT /plants/editPlant/:plantId | Edits the user's plant based on given plant id | authorization: {JWT (json web token)} | In body - tag followed by the new change. Ex. To edit the name: {name: name_to_change_to} |
+| DEL /plants/:plantId | Deletes the plant with the given id from the user's plant list | authorization: {JWT (json web token)} | n/a |
